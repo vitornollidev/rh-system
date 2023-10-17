@@ -1,11 +1,12 @@
 package com.test.demo.controllers;
 
+import com.test.demo.dtos.DepartmentDTO;
+import com.test.demo.dtos.DepartmentInsertDTO;
 import com.test.demo.entities.Department;
 import com.test.demo.repositories.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,4 +23,12 @@ public class DepartmentController {
         return result;
     }
 
+    @PostMapping
+    public ResponseEntity<DepartmentDTO> insert(@RequestBody DepartmentInsertDTO dto){
+        Department department = new Department();
+        department.setName(dto.name());
+        department = repository.save(department);
+
+        return ResponseEntity.ok().body(new DepartmentDTO(department.getId(), department.getName()));
+    }
 }

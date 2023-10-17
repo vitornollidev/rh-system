@@ -1,5 +1,7 @@
 package com.test.demo.controllers;
 
+import com.test.demo.dtos.UserDTO;
+import com.test.demo.dtos.UserInsertDTO;
 import com.test.demo.entities.User;
 import com.test.demo.repositories.UserRepository;
 import com.test.demo.services.exceptionsTypes.ResourcesNotFound;
@@ -30,9 +32,16 @@ public class UserController {
         return user;
     }
     @PostMapping
-    public User insert(@RequestBody User user){
-        User result = repository.save(user);
-        return result;
+    public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dto){
+        User user = new User();
+        user.setName(dto.name());
+        user.setEmail(dto.email());
+        user.setRole(dto.role());
+        user.setDepartment(dto.department());
+
+        user = repository.save(user);
+
+        return ResponseEntity.ok().body(new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getDepartment()));
     }
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id){
