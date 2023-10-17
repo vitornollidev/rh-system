@@ -79,9 +79,11 @@
               </div>
               <div class="md-form mb-4">
                 <i class="fas fa-lock prefix grey-text"></i>
-                <label data-error="wrong" data-success="right" for="defaultForm-pass">Departamento</label>
-                <input type="email" id="defaultForm-department" class="form-control validate" name="department-employer" readonly>
-                <input style="display: none" type="email" id="defaultForm-department-id" class="form-control validate" name="department-employer-id" readonly>
+                <label data-error="wrong" data-success="right" for="defaultForm-pass">Selecione o departamento:</label>
+                <br>
+                <select id="select-department" required>
+                  <option value="">Selecione aqui:</option>
+                </select>
               </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
@@ -241,27 +243,28 @@
                     $("#select-role").append('<option value="' + element.id + '" >' + element.name + '</option>');
                 });
                 $("#select-role").trigger('change');
-
-                $("#select-role").change(function(){
-                    const role = document.getElementById("select-role").value;
-                    $.ajax({
-                        url: "http://localhost:8080/department-roles/role/" + role,
-                        method: "GET",
-                        dataType: "JSON",
-                        success: function(response){
-                            $("#defaultForm-department-id").val(response.id)
-                            $("#defaultForm-department").val(response.name);
-                        },
-                        error: function(response){
-                            alert("Erro ao buscar departamento: " + response);
-                        }
-                    })
-                })
+                $("#select-department").trigger('change');
             },
             error: function(response){
               alert("Erro ao buscar cargos: " + response);
             }
         });
+    $("#select-department").select2()
+      $.ajax({
+          url: "http://localhost:8080/department",
+          method: "GET",
+          dataType: "JSON",
+          success: function(response){
+            response.forEach(element => {
+                    $("#select-department").append('<option value="' + element.id + '" >' + element.name + '</option>');
+                });
+                $("#select-role").trigger('change');
+                $("#select-department").trigger('change');
+          },
+          error: function(response){
+            alert("Erro ao buscar departamentos: " + response);
+          }
+      })    
         $("#modal-register").modal('show');
   }
 
@@ -271,9 +274,9 @@
     let name = document.getElementById("defaultForm-name").value;
     let email = document.getElementById("defaultForm-email").value;
     let role = document.getElementById("select-role").value;
-    let department = document.getElementById("defaultForm-department-id").value;
+    let department = document.getElementById("select-department").value;
 
-    validateDepartmentRole(name, email,role, department)
+    registerEmployer(name, email, role, department)
   });
 
   function showModalConfirmDeleteEmployer(idEmployer){

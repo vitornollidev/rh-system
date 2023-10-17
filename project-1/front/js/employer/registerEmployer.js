@@ -1,4 +1,4 @@
-function registerEmployer(name, email, departmentRoleId){
+function registerEmployer(name, email, role, department){
 
       $.ajax({
             url: "http://localhost:8080/users",
@@ -8,7 +8,12 @@ function registerEmployer(name, email, departmentRoleId){
             data: JSON.stringify({
                 name: name,
                 email: email,
-                departmentRole: departmentRoleId
+                role:{
+                    id: role
+                },
+                department:{
+                    id: department
+                }
             }),
             success: function(response){
                 $('#modal-register').modal('hide');
@@ -24,17 +29,4 @@ function registerEmployer(name, email, departmentRoleId){
                 console.log("Erro ao inserir: " + response);
             }
       })
-}
-function validateDepartmentRole(name, email, role, department){
-    $.ajax({
-        url: "http://localhost:8080/department-roles/department="+department+"/role="+role,
-        method: "GET",
-        dataType: "JSON",
-        success: function(response){
-            registerEmployer(name, email, response.id);
-        },
-        error: function(response){
-            alert("Erro ao cadastrar usuário com esse departamento e esse cargo " + response);
-        }
-    })
 }
