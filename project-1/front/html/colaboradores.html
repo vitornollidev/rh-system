@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ptbr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Dashboard Template · Bootstrap v5.0</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="../js/employer/apiColaboradores.js"></script>
+    <script src="../js/employer/registerEmployer.js"></script>
+    <script src="../js/employer/deleteEmployer.js"></script>
+    <script src="../js/employer/editEmployer.js"></script>
+
+    <!-- Bootstrap core CSS -->
+<link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<meta name="theme-color" content="#7952b3">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      .select2-container--open {
+        z-index: 9999 !important;
+      }
+
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/5.0/examples/dashboard/dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+    
+    <!-- 
+      Modal area
+    -->
+    <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h4 class="modal-title w-100 font-weight-bold">Cadastrar Colaborador</h4>
+          </div>
+          <form id="form-register-employer">
+            <div class="modal-body mx-3">
+              <div class="md-form mb-5">
+                <i class="fas fa-envelope prefix grey-text"></i>
+                <label data-error="wrong" data-success="right" for="defaultForm-name">Nome Colaborador</label>
+                <input type="text" id="defaultForm-name" class="form-control validate" name="name-employer" placeholder="Digite aqui o nome do colaborador..." required>
+              </div>
+              <div class="md-form mb-4">
+                <i class="fas fa-lock prefix grey-text"></i>
+                <label data-error="wrong" data-success="right" for="defaultForm-pass">E-mail</label>
+                <input type="email" id="defaultForm-email" class="form-control validate" name="email-employer" placeholder="Digite aqui o e-mail do colaborador..." required>
+              </div>
+              <div class="md-form mb-4">
+                <i class="fas fa-lock prefix grey-text"></i>
+                <label data-error="wrong" data-success="right" for="defaultForm-pass">Selecione o cargo:</label>
+                <br> 
+                <select id="select-role" required>
+                    <option value="">Selecione aqui:</option>
+                </select>
+              </div>
+              <div class="md-form mb-4">
+                <i class="fas fa-lock prefix grey-text"></i>
+                <label data-error="wrong" data-success="right" for="defaultForm-pass">Departamento</label>
+                <input type="email" id="defaultForm-department" class="form-control validate" name="department-employer" readonly>
+                <input style="display: none" type="email" id="defaultForm-department-id" class="form-control validate" name="department-employer-id" readonly>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+              <button type="submit" class="btn btn-success">Cadastrar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+</div>
+
+<div class="modal" id="modal-information" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-title"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="p-modal-body"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-delete-employer" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title-deleted">Deletar Colaborador</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModalDelete()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="p-modal-body-delete"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="closeModalDelete()">Voltar</button>
+        <button type="button" class="btn btn-danger" id="btn-delete-employer" onclick="deleteEmployer(value)">Deletar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-edit-employer" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title-deleted">Editar Colaborador</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModalEditEmployer()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-edit-employer">
+          <label for="id-edit-employer">Id Colaborador</label>
+          <br>
+          <input type="number" class="id-edit-employer" id="id-edit-employer" readonly style="background-color: #d3d3d3; border-style: none;">
+          <br><br>
+          <label for="name-edit-eployer">Nome Colaborador</label>
+          <br>
+          <input type="text" id="name-edit-employer" class="name-edit-employer">
+          <br><br>
+          <label for="email-edit-eployer">E-mail Colaborador</label>
+          <br>
+          <input type="email" id="email-edit-employer" class="email-edit-employer">
+          <br><br>
+          <label for="department-edit-eployer">Departamento Colaborador</label>
+          <br>
+          <select id="select-edit-department">
+                    
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="closeModalEditEmployer()">Voltar</button>
+          <button type="submit" class="btn btn-warning" id="btn-delete-employer">Editar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Gerenciar Colaboradores</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="navbar-nav">
+    <div class="nav-item text-nowrap">
+      <a class="nav-link px-3" href="#">Sair do Sistema</a>
+    </div>
+  </div>
+</header>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="colaboradores.html">
+              <span data-feather="home"></span>
+              Colaboradores
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="departamentos.html">
+              <span data-feather="file"></span>
+              Departamentos
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-initial flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2>Colaboradores</h2> &nbsp;&nbsp;&nbsp;&nbsp; 
+        <svg onclick="openModalRegister()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+          <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+          <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+        </svg>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm" id="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nome</th>
+              <th scope="col">E-mail</th>
+              <th scope="col">Cargo</th>
+              <th scope="col">Departamento</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+    <script src="https://getbootstrap.com/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
+<script>
+  function openModalRegister(){
+    $("#select-role").select2()
+        $.ajax({
+            url: "http://localhost:8080/roles",
+            method: "GET",
+            dataType: "JSON",
+            success: function(response){
+                response.forEach(element => {
+                    $("#select-role").append('<option value="' + element.id + '" >' + element.name + '</option>');
+                });
+                $("#select-role").trigger('change');
+
+                $("#select-role").change(function(){
+                    const role = document.getElementById("select-role").value;
+                    $.ajax({
+                        url: "http://localhost:8080/department-roles/role/" + role,
+                        method: "GET",
+                        dataType: "JSON",
+                        success: function(response){
+                            $("#defaultForm-department-id").val(response.id)
+                            $("#defaultForm-department").val(response.name);
+                        },
+                        error: function(response){
+                            alert("Erro ao buscar departamento: " + response);
+                        }
+                    })
+                })
+            },
+            error: function(response){
+              alert("Erro ao buscar cargos: " + response);
+            }
+        });
+        $("#modal-register").modal('show');
+  }
+
+  document.getElementById('form-register-employer').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    let name = document.getElementById("defaultForm-name").value;
+    let email = document.getElementById("defaultForm-email").value;
+    let role = document.getElementById("select-role").value;
+    let department = document.getElementById("defaultForm-department-id").value;
+
+    validateDepartmentRole(name, email,role, department)
+  });
+
+  function showModalConfirmDeleteEmployer(idEmployer){
+      $('#p-modal-body-delete').text("Você tem certeza que deseja deletar o colaborador do ID " + idEmployer + " ?");
+      $('#btn-delete-employer').val(idEmployer);
+      $('#modal-delete-employer').modal('show');
+  }
+  function closeModalDelete(){
+    $('#modal-delete-employer').modal('hide');
+  }
+  function deleteEmployer(value){
+    deleteEmployerById(value);
+  }
+  function showModalEditEmployer(id, name, email, departmentId, departmentName){
+    $('#select-edit-department').empty();
+    $('#id-edit-employer').val(id);
+    $('#name-edit-employer').val(name);
+    $('#email-edit-employer').val(email);  
+    $('#select-edit-department').select2().append('<option value="' + departmentId + '" >' + departmentName + '</option>');
+    $('#modal-edit-employer').modal('show');
+  }
+
+  document.getElementById('form-edit-employer').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    let id = document.getElementById("id-edit-employer").value;
+    let name = document.getElementById("name-edit-employer").value;
+    let email = document.getElementById("email-edit-employer").value;
+    let departmentId = document.getElementById("select-edit-department").value;
+
+    editEmployerById(id, name, email, departmentId);
+  });
+  function closeModalEditEmployer(){
+    $('#modal-edit-employer').modal('hide');
+  }
+</script>
