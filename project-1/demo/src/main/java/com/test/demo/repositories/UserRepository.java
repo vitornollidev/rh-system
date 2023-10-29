@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<User, Long> {
 
 
@@ -14,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    @Modifying
 //    @Query("UPDATE User u SET u.department.id = :departmentId, u.name = :name, u.email = :email WHERE u.id = :userId")
 //    void updateUser(@Param("departmentId") Long departmentId, @Param("name") String name, @Param("email") String email, @Param("userId") Long userId);
+
+    @Query("SELECT u FROM User u WHERE u.name LIKE :name%")
+    List<User> findUserByName(@Param("name") String name);
 }

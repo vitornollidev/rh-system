@@ -11,7 +11,7 @@ public class User {
     private String name;
     private String email;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 

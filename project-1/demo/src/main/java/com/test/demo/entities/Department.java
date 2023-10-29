@@ -14,8 +14,6 @@ public class Department {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "department")
-    private List<User> userList = new ArrayList<>();
 
     public Department(){}
 
@@ -37,7 +35,5 @@ public class Department {
         this.name = name;
     }
 
-    public List<User> getUserList() {
-        return userList;
-    }
+
 }
